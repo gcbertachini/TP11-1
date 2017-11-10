@@ -1,25 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+#include <allegro5/allegro.h>   //Manejo de display y eventos
+#include <allegro5/allegro_image.h> //Manejo de imagenes
+#include <stdio.h>      //Printf
+#include <stdint.h> 
+#include <allegro5/allegro_primitives.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
+#include <allegro5/allegro_color.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
+#include <stdint.h>
+#include <time.h>
 
-/* 
- * File:   main.c
- * Author: aguscarloni
- *
- * Created on November 8, 2017, 12:21 AM
- */
 
-#include <stdio.h>
-#include <stdlib.h>
+//Defines necesarios
+#define true 1          //lo hago como defines en vez de bool porque no toma la libreria stdbool
+#define false 0
 
-/*
- * 
- */
-int main(int argc, char** argv) {
-    //
 
-    return (EXIT_SUCCESS);
+
+int main (void)
+{
+    //Declaracion de variables necesarias
+    uint8_t orden;
+    
+    //Seed para que cuando use random funcione siempre distinto 
+    srand(TIME(NULL));
 }
+    
+    
+    
+    
 
