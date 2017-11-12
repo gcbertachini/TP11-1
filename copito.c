@@ -9,9 +9,9 @@
 
 
 //Crean los nuevos puntos de la base del triangulo (derecho)
-#define X1der(x1,x2) ((((x1)+(x2))/2)/3)  //1/3Xm
-#define Y1der(y1, x1, x2) ((y1)-(sin (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
-#define X2der(x1,x2) ((((x1)+(x2))/2)*(2.0/3))  //2/3Xm
+#define X1der(x1,x2) (x2-((((x1)+(x2))/2)/3))  //1/3Xm                                                                       //AGREGUE x2-
+#define Y1der(y1, x1, x2) ((y1)+(sin (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
+#define X2der(x1,x2) (x2-((((x1)+(x2))/2)*(2.0/3)))  //2/3Xm                                                                 //AGREGUE X2-
 #define Y2der(y1, x1, x2) ((y1)-(sin(60)*((x1)-(x2))*(2.0/3))) // 2/3 de la altura  
 
 ////Crean los nuevos puntos de la base del triangulo (izquierda)
@@ -30,7 +30,8 @@
 
 static float y3 (float y1, float x1, float x2)     //la posicion del punto de abajo menos la base (=altura hip*sen (60))
 {
-    float rta = y1 - (sin(60)*(x2 - x1)) ;   //ACA NOSE QUE ONDA POR LO DE QUE Y3 QUEDA RANCIO
+    //float rta = y1 - (sin(60)*(x2 - x1)) ;   //ACA NOSE QUE ONDA POR LO DE QUE Y3 QUEDA RANCIO
+    float rta = y1 + fabs(x2-x1);
     return rta;
 }  
 static float x3 (float x1, float x2)   //El punto medio de la base
@@ -85,7 +86,7 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
                 X2abaj (x1,x2), y2,   
                 ord_actual+1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto   PUSE SUMAR
                 calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
-        al_draw_filled_triangle(x1, y1, x2, y2, x3(x1,x2), y3(y1, x1, x2), al_color_name("pink"));  //dibujo el triangulo central
+        al_draw_filled_triangle(x1, y1, x2, y2, x3(x1,x2), y3(y1, x1, x2), al_color_name("red"));  //dibujo el triangulo central
         }
         
         
