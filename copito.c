@@ -7,11 +7,29 @@
 
 //Definicion de macros internas
 
-//Crean los nuevos puntos de la base del triangulo
-#define X1 (a,b) ((((a)+(b))/2)/3)  //recibe los dos puntos en x de la base
-#define Y1 (a,b) ((((a)+(b))/2)/3)  //recibe los dos puntos en y de la base
-#define X2 (a,b) ((((a)+(b))/2)*(2.0/3))  //recibe los dos puntos en x de la base
-#define Y2 (a,b) ((((a)+(b))/2)*(2.0/3))  //recibe los dos puntos en y de la base
+//Punto superior del triangulo
+#define Y3 (y1,x1,x2) (y1-sen(60)*((x2)-(x1)))     //la posicion del punto de abajo menos la base (=altura hip*sen (60))
+#define X3 (x1,x2)  (x1+x2)/2   //El punto medio de la base
+
+
+//Crean los nuevos puntos de la base del triangulo (derecho)
+#define X1der (x1,x2) ((((x1)+(x2))/2)/3)  //1/3Xm
+#define Y1der (y1, x1, x2) ((y1)-(sen (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
+#define X2der (x1,x2) ((((x1)+(x2))/2)*(2.0/3))  //2/3Xm
+#define Y2der (y1, x1, x2) ((y1)-(sen(60)*((x1)-(x2))*(2.0/3))) // 2/3 de la altura  
+
+////Crean los nuevos puntos de la base del triangulo (izquierda)
+#define X1izq (x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)*(2.0/3)) //Xm + 2/3Xm  
+#define Y1izq (y1, x1, x2) ((y1)-(sen (60)*((x1)-(x2))/3))  //Los y son iguales que los de la derecha. 1/3 de la altura
+#define X2izq (x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)/3)  //Xm + 1/3Xm
+#define Y2izq (y1, x1, x2) ((y1)-(sen(60)*((x1)-(x2))*(2.0/3)))   
+
+////Crean los nuevos puntos de la base del triangulo (abajo).
+//No es necesario definir las Y porque son las mismas que la actual
+#define X1abaj (x1,x2) (((x2)-(x1))/3) //1/3base 
+#define X2abaj (x1,x2) (((x2)-(x1))*(2.0/3))  //2/3base
+  
+
 
 /*Definicion Funcion Copito
  Funcion recursiva que recive:
@@ -31,15 +49,34 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
     {
         al_draw_filled_triangle(x1, y1, //Coordenadas de P1 (izquierda)
                                 x2, y2, //Coordenadas de P2 (derecha)
-                                (x1+x2)/2, y1-(x2-x1),  //Coordenadas de P3(arriba)
-                                al_color_rgb_to_name( (rand () % 255), (rand () % 255), (rand () % 255)) ); //Color
+                                X3(x1, x2), Y3(y1, x1, x2),  //Coordenadas de P3(arriba)
+                                al_color_name("pink")); //Color
     }
     else
     {
-        Copito (X1(x1,x2), Y1(y1,y2),   //Coord. del nuevo P1. se encuentra a 1/3 del lateral izq del actual
-                X2(x1,x2), Y2(y1,y2), //Coord. del nuevo P2. . Se encuentra a 2/3 del lateral izq del actual   
+        //Dibujo los triangulos del cateto derecho
+        Copito (X1der(x1,x2), Y1der(y1, x1, x2),   //Coord. del nuevo P1. se encuentra a 1/3 del lateral izq del actual
+                X2der(x1,x2), Y2der(y1, x1, x2), //Coord. del nuevo P2. . Se encuentra a 2/3 del lateral izq del actual   
                 ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
-                calc_tol(X1(x1,x2), Y1(y1,y2), X2(x1,x2), Y2(y1,y2) ) );
+                calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
+        
+        //Dibujo los triangulos del cateto izquierdo
+        Copito (X1izq(x1,x2), Y1izq(y1, x1, x2),   //Coord. del nuevo P1. se encuentra a 1/3 del lateral izq del actual
+                X2izq(x1,x2), Y2izq(y1, x1, x2), //Coord. del nuevo P2. . Se encuentra a 2/3 del lateral izq del actual   
+                ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
+                calc_tol(X1izq(x1,x2), Y1izq(y1, x1, x2), X2izq(x1,x2), Y2izq(y1, x1, x2) ) );
+        
+        if (ord_actual ==0) //Solo debo dibujar triangulos en la base la primera vez que se llama a la funcion
+        {
+        //Dibujo los triangulos en la base
+        Copito (X1abaj (x1,x2), y1,   
+                X2abaj (x1,x2), y2,   
+                ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
+                calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
+        al_draw_filled_triangle(x1, y1, x2, y2, X3(x1,x2), Y3(y1, x1, x2), al_color_name("pink"));  //dibujo el triangulo central
+        }
+        
+        
     }
 }
 
