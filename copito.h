@@ -1,13 +1,11 @@
-
 #ifndef COPITO_H
 #define COPITO_H
 
-extern uint8_t orden;   //Variable inicializada en main (argumento ingresado por el usuario)
-extern uint8_t tolerancia;  //Varaible inicializada en el main (argumento introducido por el usuario)
-extern ALLEGRO_DISPLAY *display;
+//Prototipos de funciones
+void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float tol_actual );
+float calc_tol (float x1, float y1, float x2, float y2);
 
-//Prototipos de fuinciones globales
-void Copito (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t ord_actual, float tol_actual );
-
-#endif /* COPITO_H */
-
+//Variables necesarias
+extern uint8_t orden;   //En el main
+extern uint8_t tolerancia; 
+#endif

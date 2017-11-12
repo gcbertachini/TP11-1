@@ -2,9 +2,8 @@
 #include <allegro5/allegro_image.h> //Manejo de imagenes
 #include <stdio.h>      //Printf
 #include <stdint.h> 
-#include <allegro5/allegro_primitives.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
-#include <allegro5/allegro_color.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
-#include <stdint.h>
+#include <allegro5/allegro_primitives.h> /
+#include <allegro5/allegro_color.h> 
 #include <time.h>
 #include "copito.h"
 
@@ -22,6 +21,7 @@ int main (void)
     //Declaracion de variables necesarias
     uint8_t orden = 3;  //Ingresado por el usuario    
     uint8_t ord_actual = 0; //Siempre empieza en 0, parametro que se le pasa a copito
+    float tolerancia = 30;
     
     
     //Allegro
@@ -49,8 +49,14 @@ int main (void)
    }
     
     //MAIN
-    copito ();
-    al_flip_display(display);
+    Copito (250, 200, 550, 200, ord_actual, calc_tol(250, 200, 550, 200));
+    al_flip_display();
+    al_rest(5.0);
+    
+    //Destruyo lo que cree en Allegro
+    al_destroy_display(display);
+    
+    return 0;
     
 }
     

@@ -7,29 +7,37 @@
 
 //Definicion de macros internas
 
-//Punto superior del triangulo
-#define Y3 (y1,x1,x2) (y1-sen(60)*((x2)-(x1)))     //la posicion del punto de abajo menos la base (=altura hip*sen (60))
-#define X3 (x1,x2)  (x1+x2)/2   //El punto medio de la base
-
 
 //Crean los nuevos puntos de la base del triangulo (derecho)
-#define X1der (x1,x2) ((((x1)+(x2))/2)/3)  //1/3Xm
-#define Y1der (y1, x1, x2) ((y1)-(sen (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
-#define X2der (x1,x2) ((((x1)+(x2))/2)*(2.0/3))  //2/3Xm
-#define Y2der (y1, x1, x2) ((y1)-(sen(60)*((x1)-(x2))*(2.0/3))) // 2/3 de la altura  
+#define X1der(x1,x2) ((((x1)+(x2))/2)/3)  //1/3Xm
+#define Y1der(y1, x1, x2) ((y1)-(sin (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
+#define X2der(x1,x2) ((((x1)+(x2))/2)*(2.0/3))  //2/3Xm
+#define Y2der(y1, x1, x2) ((y1)-(sin(60)*((x1)-(x2))*(2.0/3))) // 2/3 de la altura  
 
 ////Crean los nuevos puntos de la base del triangulo (izquierda)
-#define X1izq (x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)*(2.0/3)) //Xm + 2/3Xm  
-#define Y1izq (y1, x1, x2) ((y1)-(sen (60)*((x1)-(x2))/3))  //Los y son iguales que los de la derecha. 1/3 de la altura
-#define X2izq (x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)/3)  //Xm + 1/3Xm
-#define Y2izq (y1, x1, x2) ((y1)-(sen(60)*((x1)-(x2))*(2.0/3)))   
+#define X1izq(x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)*(2.0/3)) //Xm + 2/3Xm  
+#define Y1izq(y1, x1, x2) ((y1)-(sin (60)*((x1)-(x2))/3))  //Los y son iguales que los de la derecha. 1/3 de la altura
+#define X2izq(x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)/3)  //Xm + 1/3Xm
+#define Y2izq(y1, x1, x2) ((y1)-(sin(60)*((x1)-(x2))*(2.0/3)))   
 
 ////Crean los nuevos puntos de la base del triangulo (abajo).
 //No es necesario definir las Y porque son las mismas que la actual
-#define X1abaj (x1,x2) (((x2)-(x1))/3) //1/3base 
-#define X2abaj (x1,x2) (((x2)-(x1))*(2.0/3))  //2/3base
+#define X1abaj(x1,x2) (((x2)-(x1))/3) //1/3base 
+#define X2abaj(x1,x2) (((x2)-(x1))*(2.0/3))  //2/3base
   
 
+//Punto superior del triangulo
+
+static float y3 (float y1, float x1, float x2)     //la posicion del punto de abajo menos la base (=altura hip*sen (60))
+{
+    float rta = y1 - sin(60)*(x2 - x1) ;   
+    return rta;
+}  
+static float x3 (float x1, float x2)   //El punto medio de la base
+{
+    float rta = (x1+x2)/2;
+    return rta;
+}   
 
 /*Definicion Funcion Copito
  Funcion recursiva que recive:
@@ -42,17 +50,17 @@
  */
 
 void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float tol_actual )
-//              {COORD. P1}         {COORD. P2}         
+///////           {COORD. P1}         {COORD. P2}         
 {
     //Caso Base dibuja un triangulo
-    if ((ord_actual == orden) || (tol_actual <= tolerancia))
+    if ((ord_actual == orden) || (tol_actual <= tolerancia))    //Caso base
     {
         al_draw_filled_triangle(x1, y1, //Coordenadas de P1 (izquierda)
                                 x2, y2, //Coordenadas de P2 (derecha)
-                                X3(x1, x2), Y3(y1, x1, x2),  //Coordenadas de P3(arriba)
+                                x3(x1, x2), y3(y1, x1, x2),  //Coordenadas de P3(arriba)
                                 al_color_name("pink")); //Color
     }
-    else
+    else        //Caso Recursivo
     {
         //Dibujo los triangulos del cateto derecho
         Copito (X1der(x1,x2), Y1der(y1, x1, x2),   //Coord. del nuevo P1. se encuentra a 1/3 del lateral izq del actual
@@ -73,7 +81,7 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
                 X2abaj (x1,x2), y2,   
                 ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
                 calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
-        al_draw_filled_triangle(x1, y1, x2, y2, X3(x1,x2), Y3(y1, x1, x2), al_color_name("pink"));  //dibujo el triangulo central
+        al_draw_filled_triangle(x1, y1, x2, y2, x3(x1,x2), y3(y1, x1, x2), al_color_name("pink"));  //dibujo el triangulo central
         }
         
         
@@ -81,11 +89,12 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
 }
 
 //Funcion que calcula la longitud de la base del triangulo actual. Pitagoras para los puntos actuales de la base
+//La nueva base se encontrara en la hipotenusa
 
-
-
-static float calc_tol (float x1, float y1, float x2, float y2)
+float calc_tol (float x1, float y1, float x2, float y2) 
 {
-    float rta = sqrt((pow((x2-x1), 2)+pow(y2-y1), 2));
+    float rta = sqrt( pow ((x2-x1),2)+ pow ( (y2-y1) ,2));
     return rta;
 }
+
+
