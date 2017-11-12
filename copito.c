@@ -30,7 +30,7 @@
 
 static float y3 (float y1, float x1, float x2)     //la posicion del punto de abajo menos la base (=altura hip*sen (60))
 {
-    float rta = y1 - sin(60)*(x2 - x1) ;   
+    float rta = y1 - (sin(60)*(x2 - x1)) ;   //ACA NOSE QUE ONDA POR LO DE QUE Y3 QUEDA RANCIO
     return rta;
 }  
 static float x3 (float x1, float x2)   //El punto medio de la base
@@ -53,25 +53,29 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
 ///////           {COORD. P1}         {COORD. P2}         
 {
     //Caso Base dibuja un triangulo
-    if ((ord_actual == orden) || (tol_actual <= tolerancia))    //Caso base
+    if ((ord_actual == orden) /*|| (tol_actual <= tolerancia)*/)    //Caso base
     {
+        float x31 = x3(x1,x2);      //RESUELVO AFUERA ASI PUEDO VER BIEN EN EL GDB LAS VARIABLES
+        float y31= y3(y1,x1,x2);
+        
         al_draw_filled_triangle(x1, y1, //Coordenadas de P1 (izquierda)
                                 x2, y2, //Coordenadas de P2 (derecha)
-                                x3(x1, x2), y3(y1, x1, x2),  //Coordenadas de P3(arriba)
+                                x31, y31,  //Coordenadas de P3(arriba)
                                 al_color_name("pink")); //Color
+        
     }
     else        //Caso Recursivo
     {
         //Dibujo los triangulos del cateto derecho
         Copito (X1der(x1,x2), Y1der(y1, x1, x2),   //Coord. del nuevo P1. se encuentra a 1/3 del lateral izq del actual
                 X2der(x1,x2), Y2der(y1, x1, x2), //Coord. del nuevo P2. . Se encuentra a 2/3 del lateral izq del actual   
-                ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
+                ord_actual+1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto SUMO
                 calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
         
         //Dibujo los triangulos del cateto izquierdo
         Copito (X1izq(x1,x2), Y1izq(y1, x1, x2),   //Coord. del nuevo P1. se encuentra a 1/3 del lateral izq del actual
                 X2izq(x1,x2), Y2izq(y1, x1, x2), //Coord. del nuevo P2. . Se encuentra a 2/3 del lateral izq del actual   
-                ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
+                ord_actual+1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto  PUSE SUMAR
                 calc_tol(X1izq(x1,x2), Y1izq(y1, x1, x2), X2izq(x1,x2), Y2izq(y1, x1, x2) ) );
         
         if (ord_actual ==0) //Solo debo dibujar triangulos en la base la primera vez que se llama a la funcion
@@ -79,7 +83,7 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
         //Dibujo los triangulos en la base
         Copito (X1abaj (x1,x2), y1,   
                 X2abaj (x1,x2), y2,   
-                ord_actual-1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto
+                ord_actual+1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto   PUSE SUMAR
                 calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
         al_draw_filled_triangle(x1, y1, x2, y2, x3(x1,x2), y3(y1, x1, x2), al_color_name("pink"));  //dibujo el triangulo central
         }
