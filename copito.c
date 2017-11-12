@@ -9,29 +9,39 @@
 
 
 //Crean los nuevos puntos de la base del triangulo (derecho)
-#define X1der(x1,x2) (x2-((((x1)+(x2))/2)/3))  //1/3Xm                                                                       //AGREGUE x2-
-#define Y1der(y1, x1, x2) ((y1)+(sin (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
-#define X2der(x1,x2) (x2-((((x1)+(x2))/2)*(2.0/3)))  //2/3Xm                                                                 //AGREGUE X2-
+/*#define X1der(x1,x2) (x2-((((x2)-(x1))/2)/3)) //1/3Xm                                                                     //AGREGUE x2-
+#define Y1der(y1, x1, x2) ((y1)+(tan (60)*(((x2)-(x1))/6)))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
+#define X2der(x1,x2) (x2-((((x2)-(x1))/2)*(2.0/3))) //2/3Xm                                                               //AGREGUE X2-
+#define Y2der(y1, x1, x2) (y1)+(tan (60)*((((x2)-(x1))/2)*(2.0/3.0))) // 2/3 de la altura  
+
+////Crean los nuevos puntos de la base del triangulo (izquierda)
+#define X1izq(x1,x2) (x1+(((x2)-(x1)/2)/3)) //Xm + 2/3Xm  
+#define Y1izq(y1, x1, x2) ((y1)+(tan (60)*(((x2)-(x1))/6)))  //Los y son iguales que los de la derecha. 1/3 de la altura
+#define X2izq(x1,x2) (x1+((((x2)-(x1))/2)*(2.0/3))) //2/3Xm   //Xm + 1/3Xm
+#define Y2izq(y1, x1, x2) (y1)+(tan (60)*((((x2)-(x1))/2)*(2.0/3.0)))   
+*/
+////Crean los nuevos puntos de la base del triangulo (abajo).
+//No es necesario definir las Y porque son las mismas que la actual
+#define X1abaj(x1,x2) (((x2)-(x1))/3) //1/3base 
+#define X2abaj(x1,x2) (((x2)-(x1))*(2.0/3))  //2/3base
+ 
+#define X1der(x1,x2) ((((x1)+(x2))/2)/3)  //1/3Xm
+#define Y1der(y1, x1, x2) ((y1)-(sin (60)*((x1)-(x2))/3))  //el eje Y crece para abajo. 1/3 de la altura (sen (60)*hip)
+#define X2der(x1,x2) ((((x1)+(x2))/2)*(2.0/3))  //2/3Xm
 #define Y2der(y1, x1, x2) ((y1)-(sin(60)*((x1)-(x2))*(2.0/3))) // 2/3 de la altura  
 
 ////Crean los nuevos puntos de la base del triangulo (izquierda)
 #define X1izq(x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)*(2.0/3)) //Xm + 2/3Xm  
 #define Y1izq(y1, x1, x2) ((y1)-(sin (60)*((x1)-(x2))/3))  //Los y son iguales que los de la derecha. 1/3 de la altura
 #define X2izq(x1,x2) ((((x1)+(x2))/2)+(((x1)+(x2))/2)/3)  //Xm + 1/3Xm
-#define Y2izq(y1, x1, x2) ((y1)-(sin(60)*((x1)-(x2))*(2.0/3)))   
-
-////Crean los nuevos puntos de la base del triangulo (abajo).
-//No es necesario definir las Y porque son las mismas que la actual
-#define X1abaj(x1,x2) (((x2)-(x1))/3) //1/3base 
-#define X2abaj(x1,x2) (((x2)-(x1))*(2.0/3))  //2/3base
-  
+#define Y2izq(y1, x1, x2) ((y1)-(sin(60)*((x1)-(x2))*(2.0/3))) 
 
 //Punto superior del triangulo
 
 static float y3 (float y1, float x1, float x2)     //la posicion del punto de abajo menos la base (=altura hip*sen (60))
 {
-    //float rta = y1 - (sin(60)*(x2 - x1)) ;   //ACA NOSE QUE ONDA POR LO DE QUE Y3 QUEDA RANCIO
-    float rta = y1 + fabs(x2-x1);
+    float rta = y1 - (sin(60)*(x2 - x1)) ;   //ACA NOSE QUE ONDA POR LO DE QUE Y3 QUEDA RANCIO
+    //float rta = y1 + fabs(x2-x1);     NOSE ESTO
     return rta;
 }  
 static float x3 (float x1, float x2)   //El punto medio de la base
@@ -54,7 +64,7 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
 ///////           {COORD. P1}         {COORD. P2}         
 {
     //Caso Base dibuja un triangulo
-    if ((ord_actual == orden) /*|| (tol_actual <= tolerancia)*/)    //Caso base
+    if ((ord_actual == orden) || (tol_actual <= tolerancia))    //Caso base
     {
         float x31 = x3(x1,x2);      //RESUELVO AFUERA ASI PUEDO VER BIEN EN EL GDB LAS VARIABLES
         float y31= y3(y1,x1,x2);
@@ -63,7 +73,7 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
                                 x2, y2, //Coordenadas de P2 (derecha)
                                 x31, y31,  //Coordenadas de P3(arriba)
                                 al_color_name("pink")); //Color
-        
+        al_flip_display();
     }
     else        //Caso Recursivo
     {
@@ -86,8 +96,10 @@ void Copito (float x1, float y1, float x2, float y2, uint8_t ord_actual, float t
                 X2abaj (x1,x2), y2,   
                 ord_actual+1,   //Disminuyo en uno los triangulos que me faltan para alcanzar el orden propuesto   PUSE SUMAR
                 calc_tol(X1der(x1,x2), Y1der(y1, x1, x2), X2der(x1,x2), Y2der(y1, x1, x2) ) );
-        al_draw_filled_triangle(x1, y1, x2, y2, x3(x1,x2), y3(y1, x1, x2), al_color_name("red"));  //dibujo el triangulo central
         }
+        al_draw_filled_triangle(x1, y1, x2, y2, x3(x1,x2), y3(y1, x1, x2), al_color_name("red"));       //lo saque del if
+        al_flip_display();//dibujo el triangulo central
+        
         
         
     }
