@@ -1,0 +1,105 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   main.c
+ * Author: german
+ *hdp
+ * Created on November 12, 2017, 10:08 PM
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MENSAJE "Este es el reporte del copo de Koch.\n" \
+                "El orden del copo es:\t%u\n"\
+                "La tolerancia usada es:\t%u\n"\
+                "El color utilizado es:\t%c %hu\n"\
+                "El perímetro total alcanzo:\t%d\n"\
+                "El área total alcanzada:\t%d\n"
+
+//////   Prototipos   ////
+double DameElPerimetro(double largo, double iteraciones);
+double DameElArea(double largo, double iteraciones);
+
+int main(int argc, char** argv) 
+{
+    FILE *fileptr=NULL;
+    char *Field1=NULL,*Field2=NULL;
+    unsigned int n=0;   //orden
+    unsigned int x=0;   //tolerancia
+    unsigned short int y=0;   //color
+    char color='r';     //r,g,b
+    double largo, iteraciones;
+
+    Field1 = argv[1];
+    Field2 = argv[2];
+    
+    if(argc<2)
+    {
+        puts("Error, escasos comandos");
+        return -1;
+    }
+    
+    Field1 = argv[1];
+    Field2 = argv[2];
+    
+    if((Field1[0])!='-')
+        puts("Comando inválido, anteponer un '-'");
+    if(strcmp(Field1+1, "order") == 0)
+        n=atoi(Field2);
+    
+    if(strcmp(Field1+1, "tol") == 0)
+        x=atoi(Field2);
+    
+    if(strcmp(Field1+1, "colorr") == 0)
+    {
+        y=atoi(Field2);
+        color=(*(Field1+5));
+    }    
+    if(strcmp(Field1+1, "colorg") == 0)
+    {
+        y=atoi(Field2);
+        color=(*(Field1+5));
+    }   
+    if(strcmp(Field1+1, "colorb") == 0)
+    {
+        y=atoi(Field2);
+        color=(*(Field1+5));
+    }
+     if(strcmp(Field1+1, "report") == 0)
+     {
+         fileptr= fopen(Field2,"a+");
+         if (fileptr == NULL) 
+         puts ("Error al crear el archivo\n");
+         
+         fprintf(fileptr,MENSAJE,n,x,color,y,DameElPerimetro(largo,iteraciones),DameElArea(largo,iteraciones));
+     }
+  
+    
+    return (EXIT_SUCCESS);
+}
+
+double DameElPerimetro(double largo, double iteraciones)
+{
+    double potencia=4/3;
+    double perimetro;
+    int i;
+    
+    for(i=2;i<iteraciones;i++)
+        potencia=potencia*(4/3);
+          
+    perimetro=(3*largo*potencia);
+    
+    return perimetro;
+    
+}
+double DameElArea(double largo, double iteraciones)
+{
+    return 0;
+}
+
